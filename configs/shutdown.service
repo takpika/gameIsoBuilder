@@ -1,0 +1,12 @@
+[Unit]
+Description=Shutdown Disk Eject
+Before=shutdown.target
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=eject
+TimeoutStartSec=0
+
+[Install]
+WantedBy=shutdown.target
