@@ -103,7 +103,7 @@ class LinuxWineIsoBuilder:
         ### Install Softwares
         self.runCmd('apt install -y xserver-xorg-core xserver-xorg-video-fbdev x11-xserver-utils xinit xinput --no-install-recommends --no-install-suggests')
         self.runCmd('apt install -y xserver-xorg-input-wacom xserver-xorg-input-mouse xserver-xorg-input-kbd xserver-xorg-input-libinput --no-install-recommends --no-install-suggests')
-        self.runCmd('apt install -y pulseaudio --no-install-recommends --no-install-suggests')
+        self.runCmd('apt install -y pulseaudio ca-certificates --no-install-recommends --no-install-suggests')
         self.runCmd('apt install -y fonts-takao fonts-ipafont fonts-ipaexfont fonts-noto-cjk fonts-ubuntu --no-install-recommends --no-install-suggests')
         ### Setup Xinit
         self.copyConfig("rootdir/usr/local/bin/set-resolution.sh", replace={"{{RESOLUTION}}": self.screenResolution})
