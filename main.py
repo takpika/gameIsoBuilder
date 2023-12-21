@@ -125,7 +125,7 @@ class LinuxWineIsoBuilder:
         self.runCmd('dpkg --add-architecture i386 && apt update')
         self.runCmd('apt install -y wine32 winetricks --no-install-recommends --no-install-suggests')
         self.runCmd('/usr/lib/wine/wine cmd /c ver')
-        self.runCmd('/usr/bin/winetricks fakejapanese_ipamona')
+        self.runCmd('/usr/bin/winetricks fakejapanese_ipamona cjkfonts')
 
         ### Copy Files
         self.runLocalCmd('mkdir -p rootdir/app')
