@@ -56,6 +56,15 @@ class LinuxWineIsoBuilder:
                 totalSize += self.calcFolderSize(fp)
         return totalSize
     
+    def getDisableServices(self) -> list[str]:
+        services = []
+        for line in open('configs/disable-services.txt', 'r').readlines():
+            line = line.strip()
+            if line.startswith('#') or line == '':
+                continue
+            services.append(line)
+        return services
+    
     def cleanRootFS(self):
         ### Cleanup
         self.runLocalCmd('df -h | grep /dev/loop0')
@@ -120,12 +129,14 @@ class LinuxWineIsoBuilder:
         self.runCmd('echo "ExecStart=-/sbin/agetty --autologin root --noclear %I $TERM" >> etc/systemd/system/getty@tty1.service.d/override.conf')
         self.runCmd('echo \'[[ $(tty) == "/dev/tty1" ]] && xinit\' >> /root/.bashrc')
         self.copyConfig("rootdir/etc/systemd/system/shutdown.service")
+        for service in self.getDisableServices():
+            self.runCmd('systemctl disable ' + service)
 
         ### Install Wine
         self.runCmd('dpkg --add-architecture i386 && apt update')
         self.runCmd('apt install -y wine32 winetricks --no-install-recommends --no-install-suggests')
         self.runCmd('/usr/lib/wine/wine cmd /c ver')
-        self.runCmd('/usr/bin/winetricks fakejapanese_ipamona cjkfonts')
+        self.runCmd('/usr/bin/winetricks fakejapanese_ipamona unifont')
 
         ### Copy Files
         self.runLocalCmd('mkdir -p rootdir/app')
