@@ -113,7 +113,7 @@ class LinuxWineIsoBuilder:
         ### Install Softwares
         self.runCmd('apt install -y xserver-xorg-core xserver-xorg-video-fbdev x11-xserver-utils xinit xinput --no-install-recommends --no-install-suggests')
         self.runCmd('apt install -y xserver-xorg-input-wacom xserver-xorg-input-mouse xserver-xorg-input-kbd xserver-xorg-input-libinput --no-install-recommends --no-install-suggests')
-        self.runCmd('apt install -y pulseaudio ca-certificates --no-install-recommends --no-install-suggests')
+        self.runCmd('apt install -y pulseaudio ca-certificates eject --no-install-recommends --no-install-suggests')
         ### Setup Xinit
         self.copyConfig("rootdir/usr/local/bin/set-resolution.sh", replace={"{{RESOLUTION}}": self.screenResolution})
         self.runCmd('chmod +x /usr/local/bin/set-resolution.sh')
@@ -126,10 +126,9 @@ class LinuxWineIsoBuilder:
             self.runLocalCmd('mkdir -p rootdir/etc/systemd/system/getty@tty1.service.d/')
         self.runCmd('echo "[Service]" >> /etc/systemd/system/getty@tty1.service.d/override.conf')
         self.runCmd('echo "ExecStart=" >> /etc/systemd/system/getty@tty1.service.d/override.conf')
-        self.runCmd('echo "ExecStart=-/sbin/agetty --autologin root %I $TERM" >> etc/systemd/system/getty@tty1.service.d/override.conf')
-        self.runCmd('echo \'[[ $(tty) == "/dev/tty1" ]] && xinit\' >> /root/.bashrc')
         self.copyConfig("rootdir/etc/systemd/system/shutdown.service")
         self.copyConfig("rootdir/etc/systemd/system/xorg.service")
+        self.runCmd('systemctl enable shutdown.service xorg.service')
         for service in self.getDisableServices():
             self.runCmd('systemctl disable ' + service)
 
