@@ -5,6 +5,7 @@ After=graphical.target
 [Service]
 Type=simple
 User=root
+ExecStartPre=/bin/sleep 5
 ExecStart=/usr/bin/xinit /root/.xinitrc -- /usr/bin/Xorg :0 -nolisten tcp vt7
 Restart=always
 RestartSec=3
