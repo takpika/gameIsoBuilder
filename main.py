@@ -126,7 +126,7 @@ class LinuxWineIsoBuilder:
             self.runLocalCmd('mkdir -p rootdir/etc/systemd/system/getty@tty1.service.d/')
         self.runCmd('echo "[Service]" >> /etc/systemd/system/getty@tty1.service.d/override.conf')
         self.runCmd('echo "ExecStart=" >> /etc/systemd/system/getty@tty1.service.d/override.conf')
-        self.runCmd('echo "ExecStart=-/sbin/agetty --autologin root --noclear -l /bin/xinit %I $TERM" >> etc/systemd/system/getty@tty1.service.d/override.conf')
+        self.runCmd('echo "ExecStart=-/sbin/agetty --autologin root --noclear -l "/bin/sh -c \'/usr/bin/Xorg :0 & && DISPLAY=:0 /root/.xinitrc\'" %I $TERM" >> etc/systemd/system/getty@tty1.service.d/override.conf')
         self.runCmd('echo \'[[ $(tty) == "/dev/tty1" ]] && xinit\' >> /root/.bashrc')
         self.copyConfig("rootdir/etc/systemd/system/shutdown.service")
         for service in self.getDisableServices():
