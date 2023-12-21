@@ -3,6 +3,7 @@ Description=Start Xorg at boot
 After=graphical.target
 
 [Service]
+Type=simple
 User=root
 ExecStart=/usr/bin/xinit /root/.xinitrc -- /usr/bin/Xorg :0 -nolisten tcp vt7
 Restart=always
