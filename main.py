@@ -126,15 +126,17 @@ class LinuxWineIsoBuilder:
             self.runLocalCmd('mkdir -p rootdir/etc/systemd/system/getty@tty1.service.d/')
         self.runCmd('echo "[Service]" >> /etc/systemd/system/getty@tty1.service.d/override.conf')
         self.runCmd('echo "ExecStart=" >> /etc/systemd/system/getty@tty1.service.d/override.conf')
-        self.runCmd('echo "ExecStart=-/sbin/agetty -l "/bin/sh" -o "-c \'/usr/bin/Xorg :0 & && DISPLAY=:0 /root/.xinitrc\'" %I $TERM" >> etc/systemd/system/getty@tty1.service.d/override.conf')
+        self.runCmd('echo "ExecStart=-/sbin/agetty --autologin root %I $TERM" >> etc/systemd/system/getty@tty1.service.d/override.conf')
         self.runCmd('echo \'[[ $(tty) == "/dev/tty1" ]] && xinit\' >> /root/.bashrc')
         self.copyConfig("rootdir/etc/systemd/system/shutdown.service")
+        self.copyConfig("rootdir/etc/systemd/system/xorg.service")
         for service in self.getDisableServices():
             self.runCmd('systemctl disable ' + service)
 
         ### Install Wine
         self.runCmd('dpkg --add-architecture i386 && apt update')
         self.runCmd('apt install -y wine32 winetricks --no-install-recommends --no-install-suggests')
+        self.runCmd('dpkg --remove-architecture i386')
         self.runCmd('/usr/lib/wine/wine cmd /c ver')
         self.runCmd('/usr/bin/winetricks fakejapanese_ipamona')
 

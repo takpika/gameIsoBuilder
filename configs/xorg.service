@@ -1,0 +1,10 @@
+[Unit]
+Description=Start Xorg at boot
+After=multi-user.target
+
+[Service]
+User=root
+ExecStart=/usr/bin/xinit /root/.xinitrc -- /usr/bin/Xorg :0 -nolisten tcp vt7
+
+[Install]
+WantedBy=multi-user.target
