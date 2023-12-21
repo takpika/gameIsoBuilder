@@ -106,8 +106,8 @@ class LinuxWineIsoBuilder:
         self.runCmd('systemctl enable serial-getty@ttyS0.service')
 
         ### Setup Partition Mount
-        self.runCmd('echo "tmpfs /tmp tmpfs defaults,size=8m 0 0" >> /etc/fstab')
-        self.runCmd('echo "tmpfs /var/log tmpfs defaults,size=8m 0 0" >> /etc/fstab')
+        self.runCmd('echo "tmpfs /tmp tmpfs defaults,size=1m 0 0" >> /etc/fstab')
+        self.runCmd('echo "tmpfs /var/log tmpfs defaults,size=1m 0 0" >> /etc/fstab')
         self.runCmd('cat /etc/fstab')
 
         ### Install Softwares
