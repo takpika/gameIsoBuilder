@@ -150,10 +150,10 @@ class LinuxWineIsoBuilder:
         
         self.runLocalCmd('cp -a syslinux-6.03/bios/core/isolinux.bin isoroot/isolinux/isolinux.bin')
         self.runLocalCmd('cp syslinux-6.03/bios/com32/elflink/ldlinux/ldlinux.c32 isoroot/isolinux/ldlinux.c32')
-        self.copyConfig('isoroot/isolinux/isolinux.cfg')
+        self.copyConfig('isoroot/isolinux/isolinux.cfg', {"{{CDLABEL}}": self.name})
         self.runCmd('apt install -y dracut')
         self.runCmd('dracut --xz --force --add "dmsquash-live convertfs pollcdrom" --omit plymouth --no-hostonly --no-early-microcode /boot/initrd.img `ls /lib/modules`')
-        self.runCmd('apt purge -y dracut')
+        self.runCmd('apt remove -y lvm2')
         self.runLocalCmd('cp rootdir/boot/initrd.img isoroot/boot/initrd.img')
         self.runLocalCmd('cp rootdir/boot/vmlinuz isoroot/boot/vmlinuz')
         self.runCmd('rm -rf /boot/initrd.img /boot/vmlinuz')
@@ -163,7 +163,7 @@ class LinuxWineIsoBuilder:
         self.runLocalCmd('mksquashfs squashfsroot squashfs.img')
         self.runLocalCmd('mkdir -p isoroot/LiveOS')
         self.runLocalCmd('mv squashfs.img isoroot/LiveOS/squashfs.img')
-        self.runLocalCmd(f'cd isoroot && mkisofs -o {self.output} -R -J -T -V linux -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table .')
+        self.runLocalCmd(f'cd isoroot && mkisofs -o {self.output} -R -J -T -V {self.name} -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table .')
 
     def build(self):
         try:
