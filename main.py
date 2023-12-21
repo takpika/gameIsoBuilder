@@ -126,7 +126,7 @@ class LinuxWineIsoBuilder:
             self.runLocalCmd('mkdir -p rootdir/etc/systemd/system/getty@tty1.service.d/')
         self.runCmd('echo "[Service]" >> /etc/systemd/system/getty@tty1.service.d/override.conf')
         self.runCmd('echo "ExecStart=" >> /etc/systemd/system/getty@tty1.service.d/override.conf')
-        self.runCmd('echo "ExecStart=-/sbin/agetty --autologin root --noclear -l "/bin/sh -c \'/usr/bin/Xorg :0 & && DISPLAY=:0 /root/.xinitrc\'" %I $TERM" >> etc/systemd/system/getty@tty1.service.d/override.conf')
+        self.runCmd('echo "ExecStart=-/sbin/agetty -l "/bin/sh -c \'/usr/bin/Xorg :0 & && DISPLAY=:0 /root/.xinitrc\'" %I $TERM" >> etc/systemd/system/getty@tty1.service.d/override.conf')
         self.runCmd('echo \'[[ $(tty) == "/dev/tty1" ]] && xinit\' >> /root/.bashrc')
         self.copyConfig("rootdir/etc/systemd/system/shutdown.service")
         for service in self.getDisableServices():
@@ -151,7 +151,7 @@ class LinuxWineIsoBuilder:
         self.runLocalCmd('cp -a syslinux-6.03/bios/core/isolinux.bin isoroot/isolinux/isolinux.bin')
         self.runLocalCmd('cp syslinux-6.03/bios/com32/elflink/ldlinux/ldlinux.c32 isoroot/isolinux/ldlinux.c32')
         self.copyConfig('isoroot/isolinux/isolinux.cfg', {"{{CDLABEL}}": self.name})
-        self.runCmd('apt install -y dracut --no-install-recommends --no-install-suggests')
+        self.runCmd('apt install -y dracut xz-utils --no-install-recommends --no-install-suggests')
         self.runCmd('dracut --xz --force --add "dmsquash-live convertfs pollcdrom" --omit plymouth --no-hostonly --no-early-microcode /boot/initrd.img `ls /lib/modules`')
         self.runCmd('apt remove -y lvm2')
         self.runLocalCmd('cp rootdir/boot/initrd.img isoroot/boot/initrd.img')
