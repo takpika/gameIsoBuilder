@@ -118,7 +118,7 @@ class LinuxWineIsoBuilder:
         self.copyConfig("rootdir/usr/local/bin/set-resolution.sh", replace={"{{RESOLUTION}}": self.screenResolution})
         self.runCmd('chmod +x /usr/local/bin/set-resolution.sh')
         self.runCmd('echo "/usr/local/bin/set-resolution.sh ' + self.screenResolution + '" >> /root/.xinitrc')
-        self.runCmd('echo "cd /app && LANG=ja_JP.UTF-8 /usr/lib/wine/wine ' + self.initCmd + '; /sbin/poweroff" >> /root/.xinitrc')
+        self.runCmd('echo "cd /app && LANG=ja_JP.UTF-8 LC_ALL="ja_JP" /usr/lib/wine/wine ' + self.initCmd + '; /sbin/poweroff" >> /root/.xinitrc')
         self.runCmd('chmod +x /root/.xinitrc')
 
         ### Setup Service
@@ -153,6 +153,7 @@ class LinuxWineIsoBuilder:
         self.copyConfig('isoroot/isolinux/isolinux.cfg')
         self.runCmd('apt install -y dracut')
         self.runCmd('dracut --xz --force --add "dmsquash-live convertfs pollcdrom" --omit plymouth --no-hostonly --no-early-microcode /boot/initrd.img `ls /lib/modules`')
+        self.runCmd('apt purge -y dracut && apt autoremove -y')
         self.runLocalCmd('cp rootdir/boot/initrd.img isoroot/boot/initrd.img')
         self.runLocalCmd('cp rootdir/boot/vmlinuz isoroot/boot/vmlinuz')
         self.runCmd('rm -rf /boot/initrd.img /boot/vmlinuz')
