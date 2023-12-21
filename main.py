@@ -68,6 +68,7 @@ class LinuxWineIsoBuilder:
     def cleanRootFS(self):
         ### Cleanup
         self.runLocalCmd('df -h | grep /dev/loop0')
+        self.runCmd('apt autoremove -y')
         self.runLocalCmd('umount rootdir/dev/pts')
         self.runLocalCmd('umount rootdir/dev')
         self.runLocalCmd('umount rootdir/proc')
@@ -113,7 +114,6 @@ class LinuxWineIsoBuilder:
         self.runCmd('apt install -y xserver-xorg-core xserver-xorg-video-fbdev x11-xserver-utils xinit xinput --no-install-recommends --no-install-suggests')
         self.runCmd('apt install -y xserver-xorg-input-wacom xserver-xorg-input-mouse xserver-xorg-input-kbd xserver-xorg-input-libinput --no-install-recommends --no-install-suggests')
         self.runCmd('apt install -y pulseaudio ca-certificates --no-install-recommends --no-install-suggests')
-        self.runCmd('apt install -y fonts-takao fonts-ipafont fonts-ipaexfont fonts-noto-cjk fonts-ubuntu --no-install-recommends --no-install-suggests')
         ### Setup Xinit
         self.copyConfig("rootdir/usr/local/bin/set-resolution.sh", replace={"{{RESOLUTION}}": self.screenResolution})
         self.runCmd('chmod +x /usr/local/bin/set-resolution.sh')
@@ -136,7 +136,7 @@ class LinuxWineIsoBuilder:
         self.runCmd('dpkg --add-architecture i386 && apt update')
         self.runCmd('apt install -y wine32 winetricks --no-install-recommends --no-install-suggests')
         self.runCmd('/usr/lib/wine/wine cmd /c ver')
-        self.runCmd('/usr/bin/winetricks fakejapanese_ipamona unifont')
+        self.runCmd('/usr/bin/winetricks fakejapanese_ipamona')
 
         ### Copy Files
         self.runLocalCmd('mkdir -p rootdir/app')
@@ -153,7 +153,7 @@ class LinuxWineIsoBuilder:
         self.copyConfig('isoroot/isolinux/isolinux.cfg')
         self.runCmd('apt install -y dracut')
         self.runCmd('dracut --xz --force --add "dmsquash-live convertfs pollcdrom" --omit plymouth --no-hostonly --no-early-microcode /boot/initrd.img `ls /lib/modules`')
-        self.runCmd('apt purge -y dracut && apt autoremove -y')
+        self.runCmd('apt purge -y dracut')
         self.runLocalCmd('cp rootdir/boot/initrd.img isoroot/boot/initrd.img')
         self.runLocalCmd('cp rootdir/boot/vmlinuz isoroot/boot/vmlinuz')
         self.runCmd('rm -rf /boot/initrd.img /boot/vmlinuz')
