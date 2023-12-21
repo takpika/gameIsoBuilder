@@ -131,6 +131,7 @@ class LinuxWineIsoBuilder:
         self.runCmd('systemctl enable shutdown.service xorg.service')
         for service in self.getDisableServices():
             self.runCmd('systemctl disable ' + service)
+            self.runCmd('systemctl mask ' + service)
 
         ### Install Wine
         self.runCmd('dpkg --add-architecture i386 && apt update')
