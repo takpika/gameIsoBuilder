@@ -24,12 +24,12 @@ class LinuxBuilder:
         open(dst, 'w').write(original)
     
     def runCmd(self, cmd: str):
-        subprocess.run(["chroot", ".tmp/rootdir", "sh", "-c", "DEBIAN_FRONTEND=noninteractive " + cmd])
+        subprocess.run(["chroot", ".tmp/rootdir", "sh", "-c", "DEBIAN_FRONTEND=noninteractive " + cmd.replace("\n", " ")])
         if cmd.startswith("apt "):
             subprocess.run(["chroot", ".tmp/rootdir", "sh", "-c", "apt clean"])
 
     def runLocalCmd(self, cmd: str):
-        subprocess.run(["sh", "-c", cmd])
+        subprocess.run(["sh", "-c", cmd.replace("\n", " ")])
 
     def calcFolderSize(self, folder: str) -> int:
         totalSize = 0
@@ -139,8 +139,13 @@ class LinuxBuilder:
         self.runLocalCmd('cp -a syslinux-6.03/bios/core/isolinux.bin .tmp/isoroot/isolinux/isolinux.bin')
         self.runLocalCmd('cp syslinux-6.03/bios/com32/elflink/ldlinux/ldlinux.c32 .tmp/isoroot/isolinux/ldlinux.c32')
 
-        self.runLocalCmd('cp syslinux-6.03/efi64/efi/syslinux.efi .tmp/isoroot/EFI/BOOT/BOOTX64.EFI')
-        self.runLocalCmd('cp syslinux-6.03/efi64/com32/elflink/ldlinux/ldlinux.e64 .tmp/isoroot/EFI/BOOT/ldlinux.e64')
+        self.runLocalCmd('mkdir -p .tmp/efiboot')
+        self.runLocalCmd('dd if=/dev/zero of=.tmp/efiboot.img bs=1k count=1440')
+        self.runLocalCmd('/usr/sbin/mkfs.msdos -F 12 -M 0xf8 -n "EFI" efiboot.img')
+        self.runLocalCmd('mount -o loop .tmp/efiboot.img .tmp/efiboot && mkdir -p .tmp/efiboot/EFI/BOOT')
+        self.runLocalCmd('cp -a syslinux-6.03/efi64/efi/syslinux.efi .tmp/efiboot/EFI/BOOT/BOOTX64.EFI')
+        self.runLocalCmd('umount .tmp/efiboot && rm -rf .tmp/efiboot')
+        self.runLocalCmd('mv .tmp/efiboot.img .tmp/isoroot/isolinux/efiboot.img')
 
         self.copyConfig('.tmp/isoroot/isolinux/isolinux.cfg', {"{{CDLABEL}}": self.name})
         self.runCmd('apt install -y dracut xz-utils --no-install-recommends --no-install-suggests')
@@ -155,7 +160,13 @@ class LinuxBuilder:
         self.runLocalCmd('mksquashfs .tmp/squashfsroot .tmp/squashfs.img')
         self.runLocalCmd('mkdir -p .tmp/isoroot/LiveOS')
         self.runLocalCmd('mv .tmp/squashfs.img .tmp/isoroot/LiveOS/squashfs.img')
-        self.runLocalCmd(f'cd .tmp/isoroot && mkisofs -o {self.output} -R -J -T -V {self.name} -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table .')
+        self.runLocalCmd(f'''
+            mkisofs -o "{self.output}" -R -J -T -V "{self.name}"
+            -b isolinux/isolinux.bin
+            -no-emul-boot -boot-load-size 4 -boot-info-table
+            -eltorito-alt-boot -eltorito-platform efi -eltorito-boot isolinux/efiboot.img
+            .tmp/isoroot
+        ''')
 
     def build(self) -> str:
         try:
@@ -170,5 +181,6 @@ class LinuxBuilder:
             self.buildRootFS()
             self.buildISO()
             return self.output
-        except:
+        except Exception as e:
             self.cleanRootFS()
+            raise e
