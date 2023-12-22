@@ -148,10 +148,10 @@ class LinuxBuilder:
         self.runCmd('rm -rf /boot/initrd.img /boot/vmlinuz')
         self.cleanRootFS()
         self.runLocalCmd('mkdir -p .tmp/squashfsroot/LiveOS')
-        self.runLocalCmd('mv .tmp/rootfs.img .tmp/squashfsroot/LiveOS/.tmp/rootfs.img')
+        self.runLocalCmd('mv .tmp/rootfs.img .tmp/squashfsroot/LiveOS/rootfs.img')
         self.runLocalCmd('mksquashfs .tmp/squashfsroot .tmp/squashfs.img')
         self.runLocalCmd('mkdir -p .tmp/isoroot/LiveOS')
-        self.runLocalCmd('mv .tmp/squashfs.img .tmp/isoroot/LiveOS/.tmp/squashfs.img')
+        self.runLocalCmd('mv .tmp/squashfs.img .tmp/isoroot/LiveOS/squashfs.img')
         self.runLocalCmd(f'cd .tmp/isoroot && mkisofs -o {self.output} -R -J -T -V {self.name} -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e EFI/BOOT/BOOTX64.EFI .')
 
     def build(self) -> str:
