@@ -33,7 +33,7 @@ class Tester:
         cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom", self.path, "-boot", "d", "-nographic"]
         self.logger.info("Testing BIOS")
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        success = True
+        message = None
         timeout = 10 * 60
         startTime = time()
         try:
@@ -42,30 +42,28 @@ class Tester:
                 if proc.poll() is not None:
                     break
                 if "No bootable device" in line:
-                    success = False
+                    message = "Failed to boot"
                     break
                 if "Kernel panic" in line:
-                    success = False
+                    message = "Kernel panic"
                     break
                 if time() - startTime > timeout:
-                    success = False
+                    message = "Timeout"
                     break
                 sleep(1)
-        except:
-            success = False
         finally:
             if proc.poll() is None:
                 proc.terminate()
-        if success:
-            success = proc.poll() == 0
-        if not success:
-            raise RuntimeError("BIOS Test Failed")
+        if message is None:
+            message = None if proc.poll() == 0 else f"Unknown Error: {proc.returncode}"
+        if message is not None:
+            raise RuntimeError(message)
 
     def testUEFI(self):
         cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom", self.path, "-bios", "OVMF.fd", "-nographic"]
         self.logger.info("Testing UEFI")
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        success = True
+        message = None
         timeout = 10 * 60
         startTime = time()
         try:
@@ -74,24 +72,22 @@ class Tester:
                 if proc.poll() is not None:
                     break
                 if "filed to load Boot" in line:
-                    success = False
+                    message = "Failed to boot"
                     break
                 if "Kernel panic" in line:
-                    success = False
+                    message = "Kernel panic"
                     break
                 if time() - startTime > timeout:
-                    success = False
+                    message = "Timeout"
                     break
                 sleep(1)
-        except:
-            success = False
         finally:
             if proc.poll() is None:
                 proc.terminate()
-        if success:
-            success = proc.poll() == 0
-        if not success:
-            raise RuntimeError("UEFI Test Failed")
+        if message is None:
+            message = None if proc.poll() == 0 else f"Unknown Error: {proc.returncode}"
+        if message is not None:
+            raise RuntimeError(message)
 
 if __name__ == '__main__':
     tester = Tester()
