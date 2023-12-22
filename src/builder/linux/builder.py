@@ -31,7 +31,7 @@ class LinuxBuilder:
             subprocess.run(["chroot", ".tmp/rootdir", "sh", "-c", "apt clean"])
 
     def runLocalCmd(self, cmd: str, ignoreError: bool = False):
-        subprocess.run(["sh", "-c", cmd.replace("\n", " ")])
+        res = subprocess.run(["sh", "-c", cmd.replace("\n", " ")])
         if not ignoreError and res.returncode != 0:
             raise Exception("Command failed")
 
