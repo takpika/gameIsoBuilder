@@ -126,7 +126,7 @@ class LinuxBuilder:
         ### Install Wine
         self.runCmd('dpkg --add-architecture i386 && apt update')
         self.runCmd('apt install -y wine32 winetricks --no-install-recommends --no-install-suggests')
-        self.runCmd('dpkg --remove-architecture i386')
+        #self.runCmd('dpkg --remove-architecture i386')
         self.runCmd('/usr/lib/wine/wine cmd /c ver')
         self.runCmd('/usr/bin/winetricks fakejapanese_ipamona')
 
