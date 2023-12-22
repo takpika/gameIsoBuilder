@@ -68,7 +68,7 @@ class Tester:
 
     def testUEFI(self):
         cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom", self.path, "-bios", "OVMF.fd", "-nographic"]
-        bootFailMessage = ["failed to load Boot", "failed to start Boot", "Boot Failed"]
+        bootFailMessage = ["failed to load Boot", "failed to start Boot", "Boot Failed", "No configuration file found"]
         self.test(cmd, bootFailMessage)
 
 if __name__ == '__main__':

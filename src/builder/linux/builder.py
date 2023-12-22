@@ -150,6 +150,7 @@ class LinuxBuilder:
         self.runLocalCmd('cp syslinux-6.03/efi64/com32/menu/menu.c32 .tmp/efiboot/EFI/BOOT/')
         self.runLocalCmd('cp syslinux-6.03/efi64/com32/elflink/ldlinux/ldlinux.e64 .tmp/efiboot/EFI/BOOT/')
         self.runLocalCmd('cp syslinux-6.03/efi64/com32/libutil/libutil.c32 .tmp/efiboot/EFI/BOOT/')
+        self.copyConfig('.tmp/efiboot/EFI/BOOT/syslinux.cfg', {"{{CDLABEL}}": self.name})
         self.runLocalCmd('umount .tmp/efiboot')
         self.runLocalCmd('mv .tmp/efiboot.img .tmp/isoroot/isolinux/efiboot.img')
 
