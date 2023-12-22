@@ -71,7 +71,7 @@ class Tester:
                 print(line, end="")
                 if proc.poll() is not None:
                     break
-                if "filed to load Boot" in line:
+                if "failed to load Boot" in line:
                     message = "Failed to boot"
                     break
                 if "Kernel panic" in line:
