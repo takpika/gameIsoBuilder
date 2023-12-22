@@ -21,11 +21,7 @@ jobs:
                 run: pip install -r requirements.txt
 
             -   name: Build Image
-                run: mkdir -p fakeFolder && touch fakeFolder/fakeFile.txt && python main.py \
-                    image.iso \
-                    -f fakeFolder \
-                    -c "cmd.exe /c echo Hello World" \
-                    -o linux
+                run: mkdir -p fakeFolder && touch fakeFolder/fakeFile.txt && python main.py image.iso -f fakeFolder -c "cmd.exe /c echo Hello World" -o linux
                 
             -   name: Test Image
                 run: python test/test.py image.iso --type bios
@@ -46,11 +42,7 @@ jobs:
                 run: pip install -r requirements.txt
 
             -   name: Build Image
-                run: mkdir -p fakeFolder && touch fakeFolder/fakeFile.txt && python main.py \
-                    image.iso \
-                    -f fakeFolder \
-                    -c "cmd.exe /c echo Hello World" \
-                    -o linux
+                run: mkdir -p fakeFolder && touch fakeFolder/fakeFile.txt && python main.py image.iso -f fakeFolder -c "cmd.exe /c echo Hello World" -o linux
 
             -   name: Test Image
                 run: python test/test.py image.iso --type uefi
