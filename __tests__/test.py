@@ -35,6 +35,7 @@ class Tester:
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         success = True
         timeout = 10 * 60
+        startTime = time()
         try:
             for line in proc.stdout:
                 print(line, end="")
@@ -46,7 +47,7 @@ class Tester:
                 if "Kernel panic" in line:
                     success = False
                     break
-                if time() > timeout:
+                if time() - startTime > timeout:
                     success = False
                     break
                 sleep(1)
@@ -66,6 +67,7 @@ class Tester:
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         success = True
         timeout = 10 * 60
+        startTime = time()
         try:
             for line in proc.stdout:
                 print(line, end="")
@@ -77,7 +79,7 @@ class Tester:
                 if "Kernel panic" in line:
                     success = False
                     break
-                if time() > timeout:
+                if time() - startTime > timeout:
                     success = False
                     break
                 sleep(1)
