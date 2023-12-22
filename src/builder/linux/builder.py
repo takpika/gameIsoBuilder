@@ -138,7 +138,10 @@ class LinuxBuilder:
         
         self.runLocalCmd('cp -a syslinux-6.03/bios/core/isolinux.bin .tmp/isoroot/isolinux/isolinux.bin')
         self.runLocalCmd('cp syslinux-6.03/bios/com32/elflink/ldlinux/ldlinux.c32 .tmp/isoroot/isolinux/ldlinux.c32')
+
         self.runLocalCmd('cp syslinux-6.03/efi64/efi/syslinux.efi .tmp/isoroot/EFI/BOOT/BOOTX64.EFI')
+        self.runLocalCmd('cp syslinux-6.03/efi64/com32/elflink/ldlinux/ldlinux.e64 .tmp/isoroot/EFI/BOOT/ldlinux.e64')
+
         self.copyConfig('.tmp/isoroot/isolinux/isolinux.cfg', {"{{CDLABEL}}": self.name})
         self.runCmd('apt install -y dracut xz-utils --no-install-recommends --no-install-suggests')
         self.runCmd('dracut --xz --force --add "dmsquash-live convertfs pollcdrom" --omit plymouth --no-hostonly --no-early-microcode /boot/initrd.img `ls /lib/modules`')
@@ -152,7 +155,7 @@ class LinuxBuilder:
         self.runLocalCmd('mksquashfs .tmp/squashfsroot .tmp/squashfs.img')
         self.runLocalCmd('mkdir -p .tmp/isoroot/LiveOS')
         self.runLocalCmd('mv .tmp/squashfs.img .tmp/isoroot/LiveOS/squashfs.img')
-        self.runLocalCmd(f'cd .tmp/isoroot && mkisofs -o {self.output} -R -J -T -V {self.name} -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table -eltorito-alt-boot -e EFI/BOOT/BOOTX64.EFI .')
+        self.runLocalCmd(f'cd .tmp/isoroot && mkisofs -o {self.output} -R -J -T -V {self.name} -b isolinux/isolinux.bin -no-emul-boot -boot-load-size 4 -boot-info-table .')
 
     def build(self) -> str:
         try:
