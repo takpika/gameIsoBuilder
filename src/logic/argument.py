@@ -11,5 +11,6 @@ class ArgumentParser:
         parser.add_argument('--version', type=str, help='ISO version', default='1.0')
         parser.add_argument('-r', '--resolution', type=str, help='Screen Resolution', default='800x600')
         parser.add_argument('-o', '--os', type=str, help='OS', default='linux', choices=['linux', 'windows'])
+        parser.add_argument('-d', '--debug', action='store_true', help='Debug Mode')
         args = parser.parse_args()
         return args

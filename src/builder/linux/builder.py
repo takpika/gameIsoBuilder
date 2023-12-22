@@ -4,7 +4,7 @@ from typing import Optional
 from src.logic.runtime import Runtime
 
 class LinuxBuilder:
-    def __init__(self, output: str, folder: str, initCmd: str, name: str, version: str, resolution: str):
+    def __init__(self, output: str, folder: str, initCmd: str, name: str, version: str, resolution: str, debug: bool = False):
         Runtime.checkRoot()
         self.output = os.path.abspath(output)
         self.folder = folder
@@ -12,6 +12,7 @@ class LinuxBuilder:
         self.name = name
         self.version = version
         self.resolution = resolution
+        self.debug = debug
     
     def copyConfig(self, dst: str, replace: dict = {}):
         fileName = os.path.basename(dst)
@@ -151,7 +152,11 @@ class LinuxBuilder:
         self.runLocalCmd('umount .tmp/efiboot && rm -rf .tmp/efiboot')
         self.runLocalCmd('mv .tmp/efiboot.img .tmp/isoroot/isolinux/efiboot.img')
 
-        self.copyConfig('.tmp/isoroot/isolinux/isolinux.cfg', {"{{CDLABEL}}": self.name})
+        kernelCmdline = ""
+        if self.debug:
+            kernelCmdline += "console=ttyS0,115200n8 "
+
+        self.copyConfig('.tmp/isoroot/isolinux/isolinux.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
         self.runCmd('apt install -y dracut xz-utils --no-install-recommends --no-install-suggests')
         self.runCmd('dracut --xz --force --add "dmsquash-live convertfs pollcdrom" --omit plymouth --no-hostonly --no-early-microcode /boot/initrd.img `ls /lib/modules`')
         self.runCmd('apt remove -y lvm2 xz-utils')

@@ -48,7 +48,7 @@ jobs:
                 run: |
                     mkdir -p fakeFolder
                     touch fakeFolder/fakeFile.txt
-                    sudo python main.py image.iso -f fakeFolder -c "cmd.exe /c echo Hello World" -o linux
+                    sudo python main.py image.iso -f fakeFolder -c "cmd.exe /c echo Hello World" -o linux --debug
 
             -   name: Test Image
                 run: python __tests__/test.py image.iso --type uefi
