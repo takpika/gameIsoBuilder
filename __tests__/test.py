@@ -37,6 +37,7 @@ class Tester:
         timeout = 10 * 60
         try:
             for line in proc.stdout:
+                print(line, end="")
                 if proc.poll() is not None:
                     break
                 if "No bootable device" in line:
@@ -64,6 +65,7 @@ class Tester:
         timeout = 10 * 60
         try:
             for line in proc.stdout:
+                print(line, end="")
                 if proc.poll() is not None:
                     break
                 if "filed to load Boot" in line:

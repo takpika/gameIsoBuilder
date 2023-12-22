@@ -23,13 +23,17 @@ class LinuxBuilder:
             original = original.replace(key, value)
         open(dst, 'w').write(original)
     
-    def runCmd(self, cmd: str):
-        subprocess.run(["chroot", ".tmp/rootdir", "sh", "-c", "DEBIAN_FRONTEND=noninteractive " + cmd.replace("\n", " ")])
+    def runCmd(self, cmd: str, ignoreError: bool = False):
+        res = subprocess.run(["chroot", ".tmp/rootdir", "sh", "-c", "DEBIAN_FRONTEND=noninteractive " + cmd.replace("\n", " ")])
+        if not ignoreError and res.returncode != 0:
+            raise Exception("Command failed")
         if cmd.startswith("apt "):
             subprocess.run(["chroot", ".tmp/rootdir", "sh", "-c", "apt clean"])
 
-    def runLocalCmd(self, cmd: str):
+    def runLocalCmd(self, cmd: str, ignoreError: bool = False):
         subprocess.run(["sh", "-c", cmd.replace("\n", " ")])
+        if not ignoreError and res.returncode != 0:
+            raise Exception("Command failed")
 
     def calcFolderSize(self, folder: str) -> int:
         totalSize = 0

@@ -15,7 +15,7 @@ jobs:
                 run: |
                     sudo apt update
                     sudo apt install -y python3 python3-pip python-is-python3
-                    sudo apt install -y qemu-system-x86
+                    sudo apt install -y qemu-system-x86 squashfs-tools genisoimage
 
             -   name: Install dependencies
                 run: pip install -r requirements.txt
@@ -27,7 +27,7 @@ jobs:
                     sudo python main.py image.iso -f fakeFolder -c "cmd.exe /c echo Hello World" -o linux
                 
             -   name: Test Image
-                run: python test/test.py image.iso --type bios
+                run: python __tests__/test.py image.iso --type bios
 
     UEFI:
         runs-on: ubuntu-latest
@@ -51,4 +51,4 @@ jobs:
                     sudo python main.py image.iso -f fakeFolder -c "cmd.exe /c echo Hello World" -o linux
 
             -   name: Test Image
-                run: python test/test.py image.iso --type uefi
+                run: python __tests__/test.py image.iso --type uefi
