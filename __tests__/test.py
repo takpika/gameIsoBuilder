@@ -32,7 +32,7 @@ class Tester:
     def testBIOS(self):
         cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom", self.path, "-boot", "d", "-nographic"]
         self.logger.info("Testing BIOS")
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         message = None
         timeout = 10 * 60
         startTime = time()
@@ -62,7 +62,7 @@ class Tester:
     def testUEFI(self):
         cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom", self.path, "-bios", "OVMF.fd", "-nographic"]
         self.logger.info("Testing UEFI")
-        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         message = None
         timeout = 10 * 60
         startTime = time()
