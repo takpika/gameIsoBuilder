@@ -5,7 +5,7 @@ DefaultDependencies=no
 
 [Service]
 Type=oneshot
-ExecStart=eject
+ExecStart=/usr/bin/eject /dev/cdrom
 TimeoutStartSec=0
 
 [Install]

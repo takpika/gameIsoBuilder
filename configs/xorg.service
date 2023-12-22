@@ -3,12 +3,14 @@ Description=Start Xorg at boot
 After=graphical.target
 
 [Service]
+Type=forking
 User=root
 ExecStartPre=/bin/sleep 5
 ExecStart=/usr/bin/xinit /root/.xinitrc -- /usr/bin/Xorg :0 -nolisten tcp vt7
-ExecStop=/usr/bin/killall Xorg
+ExecStop=/bin/kill -SIGTERM $MAINPID
 Restart=always
 RestartSec=3
+TimeoutStopSec=10
 
 [Install]
 WantedBy=graphical.target

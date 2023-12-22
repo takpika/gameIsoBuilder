@@ -1,5 +1,4 @@
-import argparse, sys, os, subprocess
-from typing import Optional
+import os, subprocess
 
 from src.logic.runtime import Runtime
 
@@ -85,7 +84,6 @@ class LinuxBuilder:
         self.runLocalCmd('mount --bind /sys .tmp/rootdir/sys')
         self.runLocalCmd('cp /etc/resolv.conf .tmp/rootdir/etc/resolv.conf')
         ### Setup System
-        #set root password
         self.runCmd('echo "root:root" | chpasswd')
         self.runCmd('chsh -s /bin/bash root')
         self.runCmd('apt update')
@@ -127,7 +125,6 @@ class LinuxBuilder:
         ### Install Wine
         self.runCmd('dpkg --add-architecture i386 && apt update')
         self.runCmd('apt install -y wine32 winetricks --no-install-recommends --no-install-suggests')
-        #self.runCmd('dpkg --remove-architecture i386')
         self.runCmd('/usr/lib/wine/wine cmd /c ver')
         self.runCmd('/usr/bin/winetricks fakejapanese_ipamona')
 
@@ -143,13 +140,14 @@ class LinuxBuilder:
         
         self.runLocalCmd('cp -a syslinux-6.03/bios/core/isolinux.bin .tmp/isoroot/isolinux/isolinux.bin')
         self.runLocalCmd('cp syslinux-6.03/bios/com32/elflink/ldlinux/ldlinux.c32 .tmp/isoroot/isolinux/ldlinux.c32')
+        self.runLocalCmd('cp syslinux-6.03/efi64/mbr/isohdpfx.bin .tmp/isohdpfx.bin')
 
         self.runLocalCmd('mkdir -p .tmp/efiboot')
         self.runLocalCmd('dd if=/dev/zero of=.tmp/efiboot.img bs=1k count=1440')
         self.runLocalCmd('/usr/sbin/mkfs.msdos -F 12 -M 0xf8 -n "EFI" .tmp/efiboot.img')
         self.runLocalCmd('mount -o loop .tmp/efiboot.img .tmp/efiboot && mkdir -p .tmp/efiboot/EFI/BOOT')
         self.runLocalCmd('cp syslinux-6.03/efi64/efi/syslinux.efi .tmp/efiboot/EFI/BOOT/BOOTX64.EFI')
-        self.runLocalCmd('umount .tmp/efiboot && rm -rf .tmp/efiboot')
+        self.runLocalCmd('umount .tmp/efiboot')
         self.runLocalCmd('mv .tmp/efiboot.img .tmp/isoroot/isolinux/efiboot.img')
 
         kernelCmdline = ""
@@ -170,8 +168,9 @@ class LinuxBuilder:
         self.runLocalCmd('mkdir -p .tmp/isoroot/LiveOS')
         self.runLocalCmd('mv .tmp/squashfs.img .tmp/isoroot/LiveOS/squashfs.img')
         self.runLocalCmd(f'''
-            mkisofs -o "{self.output}" -R -J -T -V "{self.name}"
+            xorriso -as mkisofs -o "{self.output}" -R -J -T -V "{self.name}"
             -b isolinux/isolinux.bin
+            -isohybrid-mbr .tmp/isohdpfx.bin
             -no-emul-boot -boot-load-size 4 -boot-info-table
             -eltorito-alt-boot -eltorito-boot isolinux/efiboot.img
             .tmp/isoroot
