@@ -57,7 +57,7 @@ class LinuxBuilder:
     
     def cleanRootFS(self):
         ### Cleanup
-        self.runLocalCmd('df -h | grep /dev/loop0')
+        #self.runLocalCmd('df -h | grep /dev/loop0')
         self.runCmd('apt autoremove -y')
         self.runLocalCmd('umount .tmp/rootdir/dev/pts')
         self.runLocalCmd('umount .tmp/rootdir/dev')

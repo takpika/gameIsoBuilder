@@ -43,6 +43,9 @@ class Tester:
                 if "No bootable device" in line:
                     success = False
                     break
+                if "Kernel panic" in line:
+                    success = False
+                    break
                 if time() > timeout:
                     success = False
                     break
@@ -69,6 +72,9 @@ class Tester:
                 if proc.poll() is not None:
                     break
                 if "filed to load Boot" in line:
+                    success = False
+                    break
+                if "Kernel panic" in line:
                     success = False
                     break
                 if time() > timeout:
