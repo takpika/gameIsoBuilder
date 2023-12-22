@@ -168,7 +168,7 @@ class LinuxBuilder:
             mkisofs -o "{self.output}" -R -J -T -V "{self.name}"
             -b isolinux/isolinux.bin
             -no-emul-boot -boot-load-size 4 -boot-info-table
-            -eltorito-alt-boot -eltorito-platform efi -eltorito-boot isolinux/efiboot.img
+            -eltorito-alt-boot -eltorito-boot isolinux/efiboot.img
             .tmp/isoroot
         ''')
 
