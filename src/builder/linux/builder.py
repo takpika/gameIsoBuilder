@@ -145,7 +145,7 @@ class LinuxBuilder:
         self.runLocalCmd('dd if=/dev/zero of=.tmp/efiboot.img bs=1k count=1440')
         self.runLocalCmd('/usr/sbin/mkfs.msdos -F 12 -M 0xf8 -n "EFI" .tmp/efiboot.img')
         self.runLocalCmd('mount -o loop .tmp/efiboot.img .tmp/efiboot && mkdir -p .tmp/efiboot/EFI/BOOT')
-        self.runLocalCmd('cp syslinux-6.03/efi64/efi/syslinux.efi .tmp/efiboot/EFI/BOOT/syslinux.efi')
+        self.runLocalCmd('cp syslinux-6.03/efi64/efi/syslinux.efi .tmp/efiboot/EFI/BOOT/BOOTX64.EFI')
         self.runLocalCmd('cp syslinux-6.03/efi64/com32/menu/menu.c32 .tmp/efiboot/EFI/BOOT/')
         self.runLocalCmd('cp syslinux-6.03/efi64/com32/elflink/ldlinux/ldlinux.e64 .tmp/efiboot/EFI/BOOT/')
         self.runLocalCmd('cp syslinux-6.03/efi64/com32/libutil/libutil.c32 .tmp/efiboot/EFI/BOOT/')
