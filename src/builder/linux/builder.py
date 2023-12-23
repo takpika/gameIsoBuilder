@@ -16,8 +16,7 @@ class LinuxBuilder:
     def copyConfig(self, dst: str, replace: dict = {}):
         fileName = os.path.basename(dst)
         if not os.path.exists(os.path.join("configs/", fileName)):
-            print(f"Config {fileName} not found")
-            return
+            raise FileNotFoundError(f"Config {fileName} not found")
         original = open(os.path.join("configs/", fileName), 'r').read()
         for key, value in replace.items():
             original = original.replace(key, value)
@@ -150,7 +149,8 @@ class LinuxBuilder:
         self.runLocalCmd('cp syslinux-6.03/efi64/com32/menu/menu.c32 .tmp/efiboot/EFI/syslinux/')
         self.runLocalCmd('cp syslinux-6.03/efi64/com32/elflink/ldlinux/ldlinux.e64 .tmp/efiboot/EFI/syslinux/')
         self.runLocalCmd('cp syslinux-6.03/efi64/com32/libutil/libutil.c32 .tmp/efiboot/EFI/syslinux/')
-        self.copyConfig('.tmp/efiboot/EFI/syslinux/syslinux.cfg', {"{{CDLABEL}}": self.name})
+        self.copyConfig('.tmp/efiboot/EFI/syslinux/isolinux.cfg', {"{{CDLABEL}}": self.name})
+        self.runLocalCmd('mv .tmp/efiboot/EFI/syslinux/isolinux.cfg .tmp/efiboot/EFI/syslinux/syslinux.cfg')
         self.runLocalCmd('umount .tmp/efiboot')
         self.runLocalCmd('efibootmgr --create --disk .tmp/efiboot.img --loader /EFI/syslinux/syslinux.efi --label "Syslinux" --unicode')
         self.runLocalCmd('mv .tmp/efiboot.img .tmp/isoroot/isolinux/efiboot.img')
