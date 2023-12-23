@@ -152,7 +152,6 @@ class LinuxBuilder:
         self.copyConfig('.tmp/efiboot/EFI/BOOT/isolinux.cfg', {"{{CDLABEL}}": self.name})
         self.runLocalCmd('mv .tmp/efiboot/EFI/BOOT/isolinux.cfg .tmp/efiboot/EFI/BOOT/syslinux.cfg')
         self.runLocalCmd('umount .tmp/efiboot')
-        self.runLocalCmd('efibootmgr --create --disk .tmp/efiboot.img --loader /EFI/syslinux/syslinux.efi --label "Syslinux" --unicode')
         self.runLocalCmd('mv .tmp/efiboot.img .tmp/isoroot/isolinux/efiboot.img')
 
         kernelCmdline = ""
