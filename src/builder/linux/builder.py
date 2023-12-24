@@ -145,7 +145,7 @@ class LinuxBuilder:
         self.runLocalCmd('dd if=/dev/zero of=.tmp/efiboot.img bs=1k count=1440')
         self.runLocalCmd('/usr/sbin/mkfs.msdos -F 12 -M 0xf8 -n "EFI" .tmp/efiboot.img')
         self.runLocalCmd('mount -o loop .tmp/efiboot.img .tmp/efiboot && mkdir -p .tmp/efiboot/EFI/BOOT .tmp/isoroot/EFI/BOOT')
-        self.runLocalCmd('grub-mkimage -v -p "" -o .tmp/efiboot/EFI/BOOT/bootx64.efi -O x86_64-efi fat part_msdos iso9660 gzip')
+        self.runLocalCmd('grub-mkimage -v -p "" -o .tmp/efiboot/EFI/BOOT/bootx64.efi -O x86_64-efi fat part_msdos iso9660')
         self.runLocalCmd('umount .tmp/efiboot')
         self.runLocalCmd('mv .tmp/efiboot.img .tmp/isoroot/isolinux/efiboot.img')
 
