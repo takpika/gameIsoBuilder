@@ -64,13 +64,13 @@ class Tester:
             raise RuntimeError(message)
 
     def testBIOS(self):
-        cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom" if self.device == "cdrom" else "-hda", self.path, "-boot", "d", "-nographic"]
+        cmd = ["qemu-system-x86_64", "-m", "256m", "-drive", ("media=cdrom,readonly=on," if self.device == "cdrom" else "") + "format=raw,file=" + self.path, "-boot", "d", "-nographic"]
         bootFailMessage = ["No bootable device", "No configuration file found", "Loading /boot/vmlinuz... failed:"]
         self.test(cmd, bootFailMessage)
 
     def testUEFI(self):
-        cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom" if self.device == "cdrom" else "-hda", self.path, "-bios", "OVMF.fd", "-nographic"]
-        bootFailMessage = ["failed to load Boot", "failed to start Boot", "Boot Failed", "Loading /boot/vmlinuz... failed:", "grub>", "grub rescue>"]
+        cmd = ["qemu-system-x86_64", "-m", "256m", "-drive", ("media=cdrom,readonly=on," if self.device == "cdrom" else "") + "format=raw,file=" + self.path, "-bios", "OVMF.fd", "-nographic"]
+        bootFailMessage = ["failed to load Boot", "failed to start Boot", "Boot Failed. EFI " + ("DVD/CDROM" if self.device == "cdrom" else "Hard Drive"), "Loading /boot/vmlinuz... failed:", "grub>", "grub rescue>"]
         self.test(cmd, bootFailMessage)
 
 if __name__ == '__main__':
