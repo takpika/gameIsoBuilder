@@ -152,7 +152,7 @@ class LinuxBuilder:
         self.runLocalCmd('grub-mkimage -v -p "" -o .tmp/efiboot/EFI/BOOT/bootx64.efi -O x86_64-efi fat part_msdos iso9660 gzio all_video gfxterm font terminal normal linux configfile linuxefi')
         self.runLocalCmd('cp .tmp/efiboot/EFI/BOOT/bootx64.efi .tmp/isoroot/EFI/BOOT/bootx64.efi')
         self.copyConfig('.tmp/isoroot/isolinux/isolinux.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
-        self.copyConfig('.tmp/isoroot/EFI/BOOT/grub.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
+        self.copyConfig('.tmp/efiboot/EFI/BOOT/grub.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
         self.copyConfig('.tmp/isoroot/EFI/BOOT/grub.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
         self.runLocalCmd('umount .tmp/efiboot')
         self.runLocalCmd('mv .tmp/efiboot.img .tmp/isoroot/isolinux/efiboot.img')
