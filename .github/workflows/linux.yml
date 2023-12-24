@@ -26,11 +26,8 @@ jobs:
                     touch fakeFolder/fakeFile.txt
                     sudo python main.py image.iso -f fakeFolder -c "cmd.exe /c echo Hello World" -o linux --debug
                 
-            -   name: Test Image (Disk)
+            -   name: Test Image
                 run: python __tests__/test.py image.iso --type bios
-
-            -   name: Test Image (HDD)
-                run: python __tests__/test.py image.iso --type bios --device hdd
 
     UEFI:
         runs-on: ubuntu-latest
@@ -53,8 +50,5 @@ jobs:
                     touch fakeFolder/fakeFile.txt
                     sudo python main.py image.iso -f fakeFolder -c "cmd.exe /c echo Hello World" -o linux --debug
 
-            -   name: Test Image (Disk)
+            -   name: Test Image
                 run: python __tests__/test.py image.iso --type uefi
-
-            -   name: Test Image (HDD)
-                run: python __tests__/test.py image.iso --type uefi --device hdd

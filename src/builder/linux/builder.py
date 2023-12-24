@@ -172,7 +172,7 @@ class LinuxBuilder:
         self.runLocalCmd(f'''
             xorriso -as mkisofs -o "{self.output}" -R -J -T -V "{self.name}"
             -b isolinux/isolinux.bin
-            -isohybrid-mbr .tmp/isohdpfx.bin -isohybrid-gpt-basdat -isohybrid-apm-hfsplus
+            -isohybrid-mbr .tmp/isohdpfx.bin
             -no-emul-boot -boot-load-size 4 -boot-info-table
             -eltorito-alt-boot -eltorito-boot isolinux/efiboot.img
             .tmp/isoroot
