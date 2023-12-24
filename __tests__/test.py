@@ -7,6 +7,7 @@ class Tester:
         args = self.parseArgs()
         self.path = os.path.abspath(args.image)
         self.type = args.type
+        self.device = args.device
         self.logger = logging.getLogger('Tester')
         self.checkImage()
         if self.type == 'bios':
@@ -20,6 +21,7 @@ class Tester:
         parser = argparse.ArgumentParser(description='Test')
         parser.add_argument('image', type=str, help='Image Path')
         parser.add_argument('-t', '--type', type=str, help='Boot Type', choices=['bios', 'uefi'])
+        parser.add_argument('-d', '--device', type=str, help='Device Type', choices=['cdrom', 'hdd'], default='cdrom')
         return parser.parse_args()
 
     def checkImage(self):
@@ -62,12 +64,12 @@ class Tester:
             raise RuntimeError(message)
 
     def testBIOS(self):
-        cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom", self.path, "-boot", "d", "-nographic"]
+        cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom" if self.device == "cdrom" else "-hda", self.path, "-boot", "d", "-nographic"]
         bootFailMessage = ["No bootable device", "No configuration file found", "Loading /boot/vmlinuz... failed:"]
         self.test(cmd, bootFailMessage)
 
     def testUEFI(self):
-        cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom", self.path, "-bios", "OVMF.fd", "-nographic"]
+        cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom" if self.device == "cdrom" else "-hda", self.path, "-bios", "OVMF.fd", "-nographic"]
         bootFailMessage = ["failed to load Boot", "failed to start Boot", "Boot Failed", "Loading /boot/vmlinuz... failed:", "grub>", "grub rescue>"]
         self.test(cmd, bootFailMessage)
 
