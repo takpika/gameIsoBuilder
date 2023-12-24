@@ -101,7 +101,7 @@ class LinuxBuilder:
         ### Install Softwares
         self.runCmd('apt install -y xserver-xorg-core xserver-xorg-video-fbdev x11-xserver-utils xinit xinput --no-install-recommends --no-install-suggests')
         self.runCmd('apt install -y xserver-xorg-input-wacom xserver-xorg-input-mouse xserver-xorg-input-kbd xserver-xorg-input-libinput --no-install-recommends --no-install-suggests')
-        self.runCmd('apt install -y pulseaudio alsa-base ca-certificates eject psmisc --no-install-recommends --no-install-suggests')
+        self.runCmd('apt install -y pulseaudio ca-certificates eject psmisc --no-install-recommends --no-install-suggests')
         ### Setup Xinit
         self.copyConfig(".tmp/rootdir/usr/local/bin/set-resolution.sh", replace={"{{RESOLUTION}}": self.resolution})
         self.runCmd('chmod +x /usr/local/bin/set-resolution.sh')
