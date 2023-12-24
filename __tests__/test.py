@@ -63,12 +63,12 @@ class Tester:
 
     def testBIOS(self):
         cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom", self.path, "-boot", "d", "-nographic"]
-        bootFailMessage = ["No bootable device"]
+        bootFailMessage = ["No bootable device", "No configuration file found", "Loading /boot/vmlinuz... failed:"]
         self.test(cmd, bootFailMessage)
 
     def testUEFI(self):
         cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom", self.path, "-bios", "OVMF.fd", "-nographic"]
-        bootFailMessage = ["failed to load Boot", "failed to start Boot", "Boot Failed", "No configuration file found"]
+        bootFailMessage = ["failed to load Boot", "failed to start Boot", "Boot Failed", "No configuration file found", "Loading /boot/vmlinuz... failed:"]
         self.test(cmd, bootFailMessage)
 
 if __name__ == '__main__':

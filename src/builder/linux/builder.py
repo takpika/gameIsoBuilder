@@ -144,13 +144,8 @@ class LinuxBuilder:
         self.runLocalCmd('mkdir -p .tmp/efiboot')
         self.runLocalCmd('dd if=/dev/zero of=.tmp/efiboot.img bs=1k count=1440')
         self.runLocalCmd('/usr/sbin/mkfs.msdos -F 12 -M 0xf8 -n "EFI" .tmp/efiboot.img')
-        self.runLocalCmd('mount -o loop .tmp/efiboot.img .tmp/efiboot && mkdir -p .tmp/efiboot/EFI/BOOT')
-        self.runLocalCmd('cp syslinux-6.03/efi64/efi/syslinux.efi .tmp/efiboot/EFI/BOOT/BOOTX64.EFI')
-        self.runLocalCmd('cp syslinux-6.03/efi64/com32/menu/menu.c32 .tmp/efiboot/EFI/BOOT/')
-        self.runLocalCmd('cp syslinux-6.03/efi64/com32/elflink/ldlinux/ldlinux.e64 .tmp/efiboot/EFI/BOOT/')
-        self.runLocalCmd('cp syslinux-6.03/efi64/com32/libutil/libutil.c32 .tmp/efiboot/EFI/BOOT/')
-        self.copyConfig('.tmp/efiboot/EFI/BOOT/isolinux.cfg', {"{{CDLABEL}}": self.name})
-        self.runLocalCmd('mv .tmp/efiboot/EFI/BOOT/isolinux.cfg .tmp/efiboot/EFI/BOOT/syslinux.cfg')
+        self.runLocalCmd('mount -o loop .tmp/efiboot.img .tmp/efiboot && mkdir -p .tmp/efiboot/EFI/BOOT .tmp/isoroot/EFI/BOOT')
+        self.runLocalCmd('grub-mkimage -v -p "" -o .tmp/efiboot/EFI/BOOT/bootx64.efi -O x86_64-efi fat part_msdos iso9660 gzip')
         self.runLocalCmd('umount .tmp/efiboot')
         self.runLocalCmd('mv .tmp/efiboot.img .tmp/isoroot/isolinux/efiboot.img')
 
@@ -159,6 +154,7 @@ class LinuxBuilder:
             kernelCmdline += "console=ttyS0,115200n8 "
 
         self.copyConfig('.tmp/isoroot/isolinux/isolinux.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
+        self.copyConfig('.tmp/isoroot/EFI/BOOT/grub.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
         self.runCmd('apt install -y dracut xz-utils --no-install-recommends --no-install-suggests')
         self.runCmd('dracut --xz --force --add "dmsquash-live convertfs pollcdrom" --omit plymouth --no-hostonly --no-early-microcode /boot/initrd.img `ls /lib/modules`')
         self.runCmd('apt remove -y lvm2 xz-utils')
