@@ -68,7 +68,7 @@ class Tester:
 
     def testUEFI(self):
         cmd = ["qemu-system-x86_64", "-m", "256m", "-cdrom", self.path, "-bios", "OVMF.fd", "-nographic"]
-        bootFailMessage = ["failed to load Boot", "failed to start Boot", "Boot Failed", "Loading /boot/vmlinuz... failed:", "Entering rescue mode...", "Minimal BASH-like line editing is supported. For the first word, TAB"]
+        bootFailMessage = ["failed to load Boot", "failed to start Boot", "Boot Failed", "Loading /boot/vmlinuz... failed:", "grub>", "grub rescue>"]
         self.test(cmd, bootFailMessage)
 
 if __name__ == '__main__':
