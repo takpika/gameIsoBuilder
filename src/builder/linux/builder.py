@@ -153,6 +153,7 @@ class LinuxBuilder:
         self.runLocalCmd('cp .tmp/efiboot/EFI/BOOT/bootx64.efi .tmp/isoroot/EFI/BOOT/bootx64.efi')
         self.copyConfig('.tmp/isoroot/isolinux/isolinux.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
         self.copyConfig('.tmp/isoroot/EFI/BOOT/grub.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
+        self.copyConfig('.tmp/isoroot/EFI/BOOT/grub.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
         self.runLocalCmd('umount .tmp/efiboot')
         self.runLocalCmd('mv .tmp/efiboot.img .tmp/isoroot/isolinux/efiboot.img')
 
