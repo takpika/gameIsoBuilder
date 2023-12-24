@@ -148,10 +148,10 @@ class LinuxBuilder:
         self.runLocalCmd('mkdir -p .tmp/efiboot')
         self.runLocalCmd('dd if=/dev/zero of=.tmp/efiboot.img bs=1k count=1440')
         self.runLocalCmd('/usr/sbin/mkfs.msdos -F 12 -M 0xf8 -n "EFI" .tmp/efiboot.img')
-        self.runLocalCmd('mount -o loop .tmp/efiboot.img .tmp/efiboot && mkdir -p .tmp/efiboot/EFI/BOOT .tmp/isoroot/EFI/BOOT')
-        self.runLocalCmd('grub-mkimage -v -p "" -o .tmp/efiboot/EFI/BOOT/bootx64.efi -O x86_64-efi fat part_msdos iso9660 gzio all_video gfxterm font terminal normal linux echo test search configfile cpuid minicmd linuxefi')
+        self.runLocalCmd('mount -o loop .tmp/efiboot.img .tmp/efiboot && mkdir -p .tmp/efiboot/EFI/BOOT .tmp/isoroot/EFI/grub')
+        self.runLocalCmd('grub-mkimage -v -p "" -o .tmp/efiboot/EFI/BOOT/bootx64.efi -O x86_64-efi fat part_msdos iso9660 gzio all_video gfxterm font terminal normal linux configfile linuxefi')
         self.copyConfig('.tmp/isoroot/isolinux/isolinux.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
-        self.copyConfig('.tmp/isoroot/EFI/BOOT/grub.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
+        self.copyConfig('.tmp/isoroot/EFI/grub/grub.cfg', {"{{CDLABEL}}": self.name, "{{CMDLINE}}": kernelCmdline})
         self.runLocalCmd('umount .tmp/efiboot')
         self.runLocalCmd('mv .tmp/efiboot.img .tmp/isoroot/isolinux/efiboot.img')
 
